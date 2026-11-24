@@ -82,8 +82,16 @@ async function upstream(path, { token, method = 'GET', data, schema = false } = 
     body: data ? JSON.stringify(data) : undefined,
   });
   if (!response.ok) {
+    if (!schema && [400,401,403,429].includes(response.status)) {
+      const problem = await response.json().catch(() => null);
+      const code = problem?.error_code ?? problem?.code;
+      if (code === 'invalid_credentials') throw failure(401);
+      if (response.status === 429) throw failure(429);
+      if (code === 'captcha_failed') throw failure(422);
+      console.error('Supabase Auth rejected request', response.status, typeof code === 'string' && /^[a-z_]{1,80}$/.test(code) ? code : 'unknown');
+      throw failure(502);
+    }
     if (response.status === 401) throw failure(401);
-    if (!schema && response.status === 400) throw failure(401);
     if (response.status === 409) throw failure(409);
     if (schema && [403,404,406].includes(response.status)) throw failure(503);
     if (schema && response.status === 400) throw failure(400);
@@ -179,7 +187,7 @@ async function save(body, token) {
 }
 const messages = {
   400:'Confira os dados do lançamento.', 401:'Credenciais inválidas ou sessão expirada.',
-  403:'Esta conta ainda não tem acesso ao Gestão Pessoal.', 404:'Registro indisponível.', 409:'Já existe um registro com esses dados.',
+  403:'Esta conta ainda não tem acesso ao Gestão Pessoal.', 422:'A verificação de segurança do login não foi concluída.', 429:'Muitas tentativas. Aguarde antes de tentar de novo.', 404:'Registro indisponível.', 409:'Já existe um registro com esses dados.',
   503:'O acesso do aplicativo ao Supabase ainda precisa ser configurado.',
 };
 export async function api(request,response) {
