@@ -196,11 +196,12 @@ export async function api(request,response) {
     const sessionId = request.headers.cookie?.match(/(?:^|; )gp_session=([A-Za-z0-9_-]{1,4000})(?:;|$)/)?.[1];
     const now = Date.now();
     for (const [id,entry] of sessions) if (entry.expires <= now) sessions.delete(id);
-    if (request.url === '/api/logout' && request.method === 'POST') {
+    const path = new URL(request.url,'http://localhost').pathname;
+    if (path === '/api/logout' && request.method === 'POST') {
       sessions.delete(sessionId); respond(response,200,{},cookie('',0)); return;
     }
     if (!url || !key || (deployed && !secret)) throw failure(503);
-    if (request.url === '/api/login' && request.method === 'POST') {
+    if (path === '/api/login' && request.method === 'POST') {
       const {email,password} = await jsonBody(request);
       if (typeof email !== 'string' || typeof password !== 'string' || email.length > 320 || password.length > 512) throw failure(400);
       const auth = await upstream('/auth/v1/token?grant_type=password',{method:'POST',data:{email,password}});
@@ -214,7 +215,7 @@ export async function api(request,response) {
     }
     const session = readSession(sessionId);
     if (!session || session.expires <= now) throw failure(401);
-    if (request.url === '/api/state' && request.method === 'GET') {
+    if (path === '/api/state' && request.method === 'GET') {
       if (await upstream('/rest/v1/rpc/tem_acesso_app',{token:session.token,schema:true}) !== true) throw failure(403);
       const pairs = await Promise.all(Object.entries(resources).map(async ([type,[,property]]) => {
         const rows = await getAll(type,session.token);
@@ -222,7 +223,7 @@ export async function api(request,response) {
       }));
       respond(response,200,Object.fromEntries(pairs)); return;
     }
-    if (request.url === '/api/entry' && request.method === 'POST') {
+    if (path === '/api/entry' && request.method === 'POST') {
       respond(response,200,await save(await jsonBody(request),session.token)); return;
     }
     throw failure(404);
