@@ -320,5 +320,5 @@ $('logout').addEventListener('click', async () => {
   Object.assign(state,emptyState());
   $('workspace').hidden = true;
   $('access').hidden = false;
-  $('demo').focus();
+  $('login').querySelector('[name=email]').focus();
 });
