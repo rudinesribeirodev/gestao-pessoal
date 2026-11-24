@@ -10,7 +10,6 @@ const inMonth = entry => entry.date.startsWith(month() + '-');
 const opening = () => month() + '-01';
 const state = { bills: [], income: [], reserve: [], sources: [], targets: [], goals: {} };
 let editing;
-let connected = false;
 const collections = {bill:'bills',income:'income',source:'sources',target:'targets',reserve:'reserve'};
 const emptyState = () => ({bills:[],income:[],reserve:[],sources:[],targets:[],goals:{}});
 async function request(path, payload) {
@@ -20,7 +19,6 @@ async function request(path, payload) {
   return result;
 }
 async function persist(type, item, record) {
-  if (!connected) return {...item,...record};
   const id = type === 'goal' ? (state.goals[record.date.slice(0,7)] == null ? null : record.date) : item?.id;
   return request('entry',{type,id,record:{...item,...record}});
 }
@@ -270,7 +268,7 @@ $('entry').addEventListener('submit', async event => {
       }
     }
     $('editor').close();
-    announce(connected ? 'Alteração salva.' : 'Alteração salva nesta demonstração.');
+    announce('Alteração salva.');
     render();
   } catch (error) {
     $('form-error').textContent = error.message;
@@ -297,18 +295,11 @@ $('month').addEventListener('change', () => {
   render();
 });
 function showWorkspace() {
-  $('mode').textContent = connected ? 'Sessão autenticada' : 'Ambiente de demonstração';
-  $('logout').textContent = connected ? 'Sair' : 'Sair da demonstração';
   $('access').hidden = true;
   $('workspace').hidden = false;
   render();
   $('workspace').querySelector('[aria-current]').focus();
 }
-$('demo').addEventListener('click', () => {
-  connected = false;
-  Object.assign(state,emptyState());
-  showWorkspace();
-});
 $('login').addEventListener('submit', async event => {
   event.preventDefault();
   const form = event.currentTarget;
@@ -319,15 +310,13 @@ $('login').addEventListener('submit', async event => {
     await request('login',Object.fromEntries(new FormData(form)));
     form.reset();
     Object.assign(state,await request('state'));
-    connected = true;
     showWorkspace();
   } catch (error) { $('login-error').textContent = error.message; }
   finally { button.disabled = false; }
 });
 $('logout').addEventListener('click', async () => {
-  try { if (connected) await request('logout',{}); }
+  try { await request('logout',{}); }
   catch (error) { announce(error.message); return; }
-  connected = false;
   Object.assign(state,emptyState());
   $('workspace').hidden = true;
   $('access').hidden = false;

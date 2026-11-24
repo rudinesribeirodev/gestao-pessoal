@@ -10,14 +10,14 @@
 <body>
 <main id="access" class="access">
   <section class="intro"><span class="brand"><i aria-hidden="true">↗</i> Gestão Pessoal</span><h1>Suas finanças, mês a mês.</h1><p>Organize contas, acompanhe suas entradas e veja quanto falta para chegar à sua meta.</p></section>
-  <section class="access-form"><div><h2>Entrar no Gestão Pessoal</h2><p>Entre com sua conta do Gestão Pessoal.</p><form id="login" class="login-fields"><label>E-mail<input name="email" type="email" autocomplete="username" required></label><label>Senha<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">Entrar</button><p id="login-error" role="alert"></p></form><button id="demo" class="primary">Abrir demonstração</button></div></section>
+  <section class="access-form"><div><h2>Entrar no Gestão Pessoal</h2><p>Entre com sua conta do Gestão Pessoal.</p><form id="login" class="login-fields"><label>E-mail<input name="email" type="email" autocomplete="username" required></label><label>Senha<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">Entrar</button><p id="login-error" role="alert"></p></form></div></section>
 </main>
 <div id="workspace" hidden>
   <aside class="sidebar"><span class="brand"><i aria-hidden="true">↗</i> Gestão Pessoal</span>
     <nav aria-label="Menu principal"><button data-view="month" aria-current="page">Visão mensal</button><button data-view="sources">Fontes e metas</button></nav>
-    <button id="logout">Sair da demonstração</button></aside>
+    <button id="logout">Sair</button></aside>
   <main class="content">
-    <header><div><p id="mode" class="eyebrow">Ambiente de demonstração</p><h1 id="page-title">Visão mensal</h1></div><label>Mês de referência<input id="month" type="month"></label></header>
+    <header><div><p id="mode" class="eyebrow">Sessão autenticada</p><h1 id="page-title">Visão mensal</h1></div><label>Mês de referência<input id="month" type="month"></label></header>
     <section id="month-view">
       <div class="metrics" id="metrics"></div>
       <div class="columns">
