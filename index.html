@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestão Pessoal</title>
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<main id="access" class="access">
+  <section class="intro"><span class="brand"><i aria-hidden="true">↗</i> Gestão Pessoal</span><h1>Suas finanças, mês a mês.</h1><p>Organize contas, acompanhe suas entradas e veja quanto falta para chegar à sua meta.</p></section>
+  <section class="access-form"><div><h2>Entrar no Gestão Pessoal</h2><p>Entre com sua conta do Gestão Pessoal.</p><form id="login" class="login-fields"><label>E-mail<input name="email" type="email" autocomplete="username" required></label><label>Senha<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">Entrar</button><p id="login-error" role="alert"></p></form><button id="demo" class="primary">Abrir demonstração</button></div></section>
+</main>
+<div id="workspace" hidden>
+  <aside class="sidebar"><span class="brand"><i aria-hidden="true">↗</i> Gestão Pessoal</span>
+    <nav aria-label="Menu principal"><button data-view="month" aria-current="page">Visão mensal</button><button data-view="sources">Fontes e metas</button></nav>
+    <button id="logout">Sair da demonstração</button></aside>
+  <main class="content">
+    <header><div><p id="mode" class="eyebrow">Ambiente de demonstração</p><h1 id="page-title">Visão mensal</h1></div><label>Mês de referência<input id="month" type="month"></label></header>
+    <section id="month-view">
+      <div class="metrics" id="metrics"></div>
+      <div class="columns">
+        <section class="panel"><div class="panel-head"><h2>Contas a pagar</h2><button class="primary" data-form="bill">+ Nova conta</button></div><div id="bills"></div></section>
+        <section class="panel"><div class="panel-head"><h2>Ganhos</h2><button class="primary" data-form="income">+ Novo ganho</button></div><div id="income"></div></section>
+      </div>
+      <section class="panel reserve"><div class="panel-head"><div><h2>Reserva</h2><p id="reserve-summary"></p></div><button data-form="reserve">+ Movimentação</button></div><div id="reserve-list"></div></section>
+    </section>
+    <section id="source-view" hidden>
+      <section class="panel"><div class="panel-head"><h2>Fontes de renda</h2><button class="primary" data-form="source">+ Nova fonte</button></div><div id="sources"></div></section>
+      <section class="panel reserve"><div class="panel-head"><h2>Metas por fonte</h2><button data-form="target">+ Nova meta</button></div><div id="targets"></div></section>
+    </section>
+    <p id="notice" role="status"></p>
+  </main>
+</div>
+<dialog id="editor"><form id="entry"><div class="panel-head"><h2 id="dialog-title"></h2><button type="button" id="close-editor" aria-label="Fechar">×</button></div><div id="fields"></div><p id="form-error" role="alert"></p><div class="actions"><button type="button" id="cancel">Cancelar</button><button class="primary">Salvar</button></div></form></dialog>
+</body>
+</html>
